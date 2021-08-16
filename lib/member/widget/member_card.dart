@@ -1,7 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class MemberCard extends StatelessWidget{
+  final String name;
+  final String phoneNumber;
+  final String avatarImage;
+
+  const MemberCard({Key? key, required this.name, this.phoneNumber = '', required this.avatarImage}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -10,7 +18,7 @@ class MemberCard extends StatelessWidget{
           children: [
             CircleAvatar(
               radius: 35,
-              backgroundImage: NetworkImage('https://static.wikia.nocookie.net/haikyuu/images/d/d2/Hinata_s4-e1-4.png/revision/latest?cb=20200506183149'),
+              backgroundImage: FileImage(new File(this.avatarImage)),
             ),
             Container(
               margin: EdgeInsets.only(left: 10),
@@ -19,11 +27,11 @@ class MemberCard extends StatelessWidget{
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                  Text('Hinata Shouto', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87),),
+                  Text(this.name, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87),),
                   Container(
                     margin: EdgeInsets.only(top: 2, bottom: 6),
                     color: Colors.black26, height: 0.5, width: 300,),
-                  Text('Midle Blocker', style: TextStyle(fontSize: 10, color: Colors.black54),),
+                  Text(this.phoneNumber, style: TextStyle(fontSize: 10, color: Colors.black54),),
                 ],),
               )
             )

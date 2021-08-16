@@ -1,77 +1,73 @@
 import 'dart:io';
 
 import 'package:darisan/core/widget/main_app_bar.dart';
+import 'package:darisan/member_add/member_add_view_model.dart';
 import 'package:darisan/member_add/widget/input_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
-class MemberAddScreen extends StatefulWidget{
-  @override
-  State<MemberAddScreen> createState() {
-    return MemberAddScreenState();
-  }
-
-}
-
-class MemberAddScreenState extends State<MemberAddScreen>{
-  XFile _image = new XFile('');
+class MemberAddScreen extends StatelessWidget{
   final ImagePicker _picker = ImagePicker();
-
-  Future getImage(ImageSource media) async {
-    XFile? img = await _picker.pickImage(source: media);
-    setState(() {
-      _image = img!;
-    });
-  }
-
-  void myAlert() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            title: Text('Please choose media to select'),
-            content: Container(
-              height: MediaQuery.of(context).size.height / 6,
-              child: Column(
-                children: <Widget>[
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      getImage(ImageSource.gallery);
-                    },
-                    child: Row(
-                      children: <Widget>[
-                        Icon(Icons.image),
-                        Text('From Gallery'),
-                      ],
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      getImage(ImageSource.camera);
-                    },
-                    child: Row(
-                      children: <Widget>[
-                        Icon(Icons.camera),
-                        Text('From Camera'),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        });
-  }
 
   @override
   Widget build(BuildContext context) {
+
+    Future getImage(ImageSource media) async {
+      XFile? img = await _picker.pickImage(source: media);
+      context.read(memberAddViewModelProvider.notifier).setState(img!.path, 'avatar');
+    }
+
+    void myAlert() {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              title: Text('Please choose media to select'),
+              content: Container(
+                height: MediaQuery.of(context).size.height / 6,
+                child: Column(
+                  children: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        getImage(ImageSource.gallery);
+                      },
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.image),
+                          Text('From Gallery'),
+                        ],
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        getImage(ImageSource.camera);
+                      },
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.camera),
+                          Text('From Camera'),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          });
+    }
+
     return Scaffold(
-      appBar: MainAppBar('Add Member'),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white,), onPressed: () { Navigator.pop(context); },
+        ),
+        title: Text('Add Member', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -80,16 +76,6 @@ class MemberAddScreenState extends State<MemberAddScreen>{
                 child: Container(
                   alignment: Alignment.center,
                   child:
-                  // ClipOval(
-                  //     child: Container(
-                  //       height: 150,
-                  //       width: 150,
-                  //       padding: EdgeInsets.all(25),
-                  //       color: Colors.blueGrey,
-                  //       child: Image(
-                  //         image: AssetImage('assets/images/add_picture.png'),
-                  //       ),
-                  //     )),
                   Column(
                     children: <Widget>[
                       Padding(
@@ -102,15 +88,17 @@ class MemberAddScreenState extends State<MemberAddScreen>{
                           child: Container(
                             height: 150,
                             width: 150,
-                            child: CircleAvatar(
-                              radius: 150,
-                              backgroundImage: _image.path == '' ? 
-                              AssetImage('assets/images/add_picture.png') :
-                              FileImage(new File(_image.path)) as ImageProvider,
-                              // Image.file(
-                              //   new File(_image.path),
-                              //   fit: BoxFit.cover,
-                              // ),
+                            child: Consumer(
+                                builder: (context, watch, widget) {
+                                  final state = watch(memberAddViewModelProvider);
+                                  return state.data.avatarImage == '' ?
+                                  Material(child: CircleAvatar(
+                                      radius: 150,
+                                      backgroundImage: AssetImage('assets/images/add_picture.png')),)  :
+                                  Material(child: CircleAvatar(
+                                      radius: 150,
+                                      backgroundImage: FileImage(new File(state.data.avatarImage)) as ImageProvider));
+                                },
                             ),
                           ),
                         )
@@ -127,15 +115,14 @@ class MemberAddScreenState extends State<MemberAddScreen>{
                       Column(
                         children: [
                           InputField(
-                            label: 'USER NAME',
+                            label: 'Username',
                             icon: Icons.person_outline,
-                            onChanged: (val) => print(val),
+                            onChanged: (val) => context.read(memberAddViewModelProvider.notifier).setState(val, 'name'),
                           ),
                           InputField(
-                            label: 'PASSWORD',
+                            label: 'Phone Number',
                             icon: Icons.lock_outline,
-                            isPassword: true,
-                            onChanged: (val) => print(val),
+                            onChanged: (val) => context.read(memberAddViewModelProvider.notifier).setState(val, 'phone'),
                           ),
                         ],
                       ),
@@ -144,7 +131,7 @@ class MemberAddScreenState extends State<MemberAddScreen>{
                         alignment: Alignment.center,
                         child: InkWell(
                               onTap: () {
-                                // Navigator.pushReplacementNamed(context, '/main');
+                                context.read(memberAddViewModelProvider.notifier).saveData(context.read(memberAddViewModelProvider).data);
                               },
                               child: Container(
                                 alignment: Alignment.center,

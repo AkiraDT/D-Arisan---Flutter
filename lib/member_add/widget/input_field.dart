@@ -72,9 +72,7 @@ class InputField extends StatelessWidget {
       // ),
       child: TextFormField(
         // initialValue: this.user,
-        // onChanged: (email) => context
-        //     .read(loginFormViewModelProvider.notifier)
-        //     .handleEmail(email),
+        onChanged: (val) => onChanged(val),
         cursorColor: this.color,
         style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87),
         autofocus: true,

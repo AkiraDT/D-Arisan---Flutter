@@ -1,1 +1,1 @@
-// const TOKEN_KEY = 'Token';
+const KEY_MEMBER = 'MEMBER';
