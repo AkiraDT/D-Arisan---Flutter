@@ -10,10 +10,15 @@ class LoadingCircle extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Container(
+      // color: Colors.black26,
       width: this.width == 0 ? MediaQuery.of(context).size.width : this.width,
       height: this.height == 0 ? MediaQuery.of(context).size.height : this.height,
       alignment: Alignment.center,
-      child: CircularProgressIndicator(color: Theme.of(context).buttonColor,strokeWidth: 6,),
+      child: Container(
+        width: 70,
+        height: 70,
+        child: CircularProgressIndicator(color: Theme.of(context).buttonColor,strokeWidth: 8,),
+      ),
     );
   }
 

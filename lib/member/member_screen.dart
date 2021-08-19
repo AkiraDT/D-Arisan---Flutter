@@ -27,12 +27,27 @@ class MemberScreen extends StatelessWidget{
                     return MemberCard(avatarImage: state.data[index].avatarImage, name: state.data[index].name, phoneNumber: state.data[index].phoneNumber,);
                   }
               );
+          } else if (state is Success && state.data.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('No Data Found!'),
+                  ElevatedButton(
+                    onPressed: () => context
+                        .refresh(memberViewModelProvider)
+                        .loadData(),
+                    child: Text("Try again"),
+                  ),
+                ],
+              ),
+            );
           } else if (state is Error) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('No Data Found, Try Again!'),
+                  Text('Something Went Wrong, Try Again!'),
                   ElevatedButton(
                     onPressed: () => context
                         .refresh(memberViewModelProvider)

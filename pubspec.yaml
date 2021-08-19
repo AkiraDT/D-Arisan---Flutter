@@ -24,6 +24,7 @@ dependencies:
   flutter:
     sdk: flutter
 
+  uuid: ^3.0.4
   image_picker: ^0.8.3+2
 #  cached_network_image: ^3.1.0
 #  pull_to_refresh: ^2.0.0
