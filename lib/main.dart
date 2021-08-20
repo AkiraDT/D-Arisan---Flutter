@@ -53,6 +53,7 @@ class MyApp extends StatelessWidget {
       home: MainTab(),
       routes: {
         '/addMember': (context) => MemberAddScreen(),
+        '/editMember': (context) => MemberAddScreen(isEdit: true,),
       },
     );
   }

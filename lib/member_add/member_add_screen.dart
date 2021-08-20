@@ -13,6 +13,9 @@ import 'package:image_picker/image_picker.dart';
 
 class MemberAddScreen extends StatelessWidget {
   final ImagePicker _picker = ImagePicker();
+  final bool isEdit;
+
+  MemberAddScreen({Key? key, this.isEdit = false}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +69,13 @@ class MemberAddScreen extends StatelessWidget {
           });
     }
 
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      String id = ModalRoute.of(context)!.settings.arguments as String;
+      if (this.isEdit) {
+        context.read(memberAddViewModelProvider.notifier).loadData(id);
+      }
+    });
+
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -77,7 +87,7 @@ class MemberAddScreen extends StatelessWidget {
               Navigator.pop(context);
             },
           ),
-          title: Text('Add Member',
+          title: Text(this.isEdit ? 'Edit Member' : 'Add Member',
               style:
                   TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         ),
@@ -135,46 +145,77 @@ class MemberAddScreen extends StatelessWidget {
                         children: [
                           Column(
                             children: [
-                              InputField(
-                                label: 'Username',
-                                icon: Icons.person_outline,
-                                onChanged: (val) => context
-                                    .read(memberAddViewModelProvider.notifier)
-                                    .setState(val, 'name'),
+                              Consumer(
+                                builder: (context, watch, child) {
+                                  final state =
+                                      watch(memberAddViewModelProvider);
+                                  return InputField(
+                                    value: state.data.name,
+                                    label: 'Username',
+                                    icon: Icons.person_outline,
+                                    onChanged: (val) => context
+                                        .read(
+                                            memberAddViewModelProvider.notifier)
+                                        .setState(val, 'name'),
+                                  );
+                                },
                               ),
                               Container(
                                 margin: EdgeInsets.only(top: 30),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text('Gender', style: TextStyle(color: Colors.black54,fontSize: 14),),
+                                    Text(
+                                      'Gender',
+                                      style: TextStyle(
+                                          color: Colors.black54, fontSize: 14),
+                                    ),
                                     Consumer(builder: (context, watch, widget) {
-                                      final state = watch(memberAddViewModelProvider);
+                                      final state =
+                                          watch(memberAddViewModelProvider);
                                       return Container(
                                         child: Row(
                                           children: [
-                                            Expanded(child: ListTile(
-                                              title: Text("Male"),
-                                              leading: Radio(
-                                                value: 'Male',
-                                                groupValue: state.data.gender,
-                                                onChanged: (val) {
-                                                  context.read(memberAddViewModelProvider.notifier).setState(val.toString(), 'gender');
-                                                },
-                                                activeColor: Theme.of(context).buttonColor,
+                                            Expanded(
+                                              child: ListTile(
+                                                title: Text("Male"),
+                                                leading: Radio(
+                                                  value: 'Male',
+                                                  groupValue: state.data.gender,
+                                                  onChanged: (val) {
+                                                    context
+                                                        .read(
+                                                            memberAddViewModelProvider
+                                                                .notifier)
+                                                        .setState(
+                                                            val.toString(),
+                                                            'gender');
+                                                  },
+                                                  activeColor: Theme.of(context)
+                                                      .buttonColor,
+                                                ),
                                               ),
-                                            ),),
-                                            Expanded(child: ListTile(
-                                              title: Text("Female"),
-                                              leading: Radio(
-                                                value: 'Female',
-                                                groupValue: state.data.gender,
-                                                onChanged: (val) {
-                                                  context.read(memberAddViewModelProvider.notifier).setState(val.toString(), 'gender');
-                                                },
-                                                activeColor: Theme.of(context).buttonColor,
+                                            ),
+                                            Expanded(
+                                              child: ListTile(
+                                                title: Text("Female"),
+                                                leading: Radio(
+                                                  value: 'Female',
+                                                  groupValue: state.data.gender,
+                                                  onChanged: (val) {
+                                                    context
+                                                        .read(
+                                                            memberAddViewModelProvider
+                                                                .notifier)
+                                                        .setState(
+                                                            val.toString(),
+                                                            'gender');
+                                                  },
+                                                  activeColor: Theme.of(context)
+                                                      .buttonColor,
+                                                ),
                                               ),
-                                            ),),
+                                            ),
                                           ],
                                         ),
                                       );
@@ -182,13 +223,17 @@ class MemberAddScreen extends StatelessWidget {
                                   ],
                                 ),
                               ),
-                              InputField(
-                                label: 'Phone Number',
-                                icon: Icons.lock_outline,
-                                onChanged: (val) => context
-                                    .read(memberAddViewModelProvider.notifier)
-                                    .setState(val, 'phone'),
-                              ),
+                              Consumer(builder: (context, watch, child) {
+                                final state = watch(memberAddViewModelProvider);
+                                return InputField(
+                                  value: state.data.phoneNumber,
+                                  label: 'Phone Number',
+                                  icon: Icons.lock_outline,
+                                  onChanged: (val) => context
+                                      .read(memberAddViewModelProvider.notifier)
+                                      .setState(val, 'phone'),
+                                );
+                              }),
                             ],
                           ),
                           Container(
@@ -196,11 +241,7 @@ class MemberAddScreen extends StatelessWidget {
                             alignment: Alignment.center,
                             child: InkWell(
                                 onTap: () {
-                                  context
-                                      .read(memberAddViewModelProvider.notifier)
-                                      .saveData(context
-                                          .read(memberAddViewModelProvider)
-                                          .data);
+                                  context.read(memberAddViewModelProvider.notifier).saveData(context.read(memberAddViewModelProvider).data, this.isEdit);
                                 },
                                 child: Container(
                                   alignment: Alignment.center,
@@ -212,7 +253,7 @@ class MemberAddScreen extends StatelessWidget {
                                   width: double.infinity,
                                   padding: EdgeInsets.symmetric(
                                       horizontal: 12, vertical: 8),
-                                  child: Text("Add Member",
+                                  child: Text(this.isEdit ? 'Update Member' : "Add Member",
                                       style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
@@ -237,7 +278,7 @@ class MemberAddScreen extends StatelessWidget {
                           isSucces: state is Success ? true : false,
                           message: state is Success ? 'Success!' : 'Error!',
                           detail: state is Success
-                              ? '${state.data.name} was Added!'
+                              ? '${state.data.name} was ${this.isEdit ? 'Updated' : 'Added'}!'
                               : (state as Error).error,
                         );
                       }).then((value) {

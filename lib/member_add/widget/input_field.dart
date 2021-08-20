@@ -7,6 +7,7 @@ class InputField extends StatelessWidget {
   final Color color;
   final bool isPassword;
   final Function onChanged;
+  final String value;
 
   const InputField(
       {Key? key,
@@ -14,63 +15,23 @@ class InputField extends StatelessWidget {
       this.icon = Icons.perm_identity_outlined,
       this.color = Colors.black54,
       this.isPassword = false,
-      required this.onChanged})
+      required this.onChanged, required this.value})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
 
-    // TextEditingController _txtController = TextEditingController();
+    TextEditingController _txtController = TextEditingController();
+    _txtController.value = TextEditingValue(
+        text: this.value,
+        selection: TextSelection.fromPosition(
+          TextPosition(offset: this.value.length),
+        ),
+      );
 
     return Container(
-      // padding: EdgeInsets.symmetric(horizontal: 10),
-      // child: Column(
-      //   crossAxisAlignment: CrossAxisAlignment.start,
-      //   children: [
-      //     this.label != '' ?
-      //     Container(
-      //       margin: EdgeInsets.only(bottom: 10),
-      //       child: Text(
-      //         this.label,
-      //         style: TextStyle(
-      //             color: Colors.grey
-      //         ),
-      //       ),
-      //     ) : SizedBox.shrink(),
-      //     Container(
-      //       child: TextField(
-      //         onChanged: (val) => this.onChanged(val),
-      //         style: TextStyle(
-      //           color: Colors.grey,
-      //           fontSize: 16
-      //         ),
-      //         obscureText: this.isPassword,
-      //         obscuringCharacter: '*',
-      //         decoration: new InputDecoration(
-      //           prefixIcon: Icon(
-      //             this.icon,
-      //             color: this.color,
-      //           ),
-      //           border: new OutlineInputBorder(
-      //             borderRadius: const BorderRadius.all(
-      //               const Radius.circular(5),
-      //             ),
-      //             borderSide: new BorderSide(
-      //               color: this.color,
-      //               width: 1.0,
-      //             ),
-      //           ),
-      //         ),
-      //       ),
-      //       decoration: BoxDecoration(
-      //         borderRadius: BorderRadius.circular(5),
-      //         color: Colors.white10,
-      //       ),
-      //     ),
-      //     SizedBox(height: 20,)
-      //   ],
-      // ),
       child: TextFormField(
+        controller: _txtController,
         // initialValue: this.user,
         onChanged: (val) => onChanged(val),
         cursorColor: this.color,

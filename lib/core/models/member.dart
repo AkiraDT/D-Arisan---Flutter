@@ -13,18 +13,19 @@ class Member {
   Member.Initial() : id = '', name='', gender='', phoneNumber='', avatarImage='', group = [];
 
   Member copyWith({
-    String name = '',
-    String phoneNumber='',
-    String avatarImage='',
-    String gender = '',
+    required String name,
+    required String phoneNumber,
+    required String avatarImage,
+    required String gender,
     required List<String> group,
   }) {
     return Member(
-      name: name == '' ? this.name : name,
-      phoneNumber: phoneNumber == '' ? this.phoneNumber : phoneNumber,
-      avatarImage: avatarImage == '' ? this.avatarImage : avatarImage,
-      group: group ?? this.group,
-      gender: gender == '' ? this.gender : gender,
+      id: this.id,
+      name: name == null ? this.name : name,
+      phoneNumber: phoneNumber == null ? this.phoneNumber : phoneNumber,
+      avatarImage: avatarImage == null ? this.avatarImage : avatarImage,
+      group: group == null ? group : this.group,
+      gender: gender == null ? this.gender : gender,
     );
   }
 

@@ -24,7 +24,7 @@ class MemberScreen extends StatelessWidget{
                   shrinkWrap: true,
                   itemCount: state.data.length,
                   itemBuilder: (context, index) {
-                    return MemberCard(avatarImage: state.data[index].avatarImage, name: state.data[index].name, phoneNumber: state.data[index].phoneNumber,);
+                    return MemberCard(memberData: state.data[index],);
                   }
               );
           } else if (state is Success && state.data.isEmpty) {
