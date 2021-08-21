@@ -118,12 +118,14 @@ class MemberAddScreen extends StatelessWidget {
                                           watch(memberAddViewModelProvider);
                                       return state.data.avatarImage == ''
                                           ? Material(
+                                              color: Colors.transparent,
                                               child: CircleAvatar(
                                                   radius: 150,
                                                   backgroundImage: AssetImage(
                                                       'assets/images/add_picture.png')),
                                             )
                                           : Material(
+                                              color: Colors.transparent,
                                               child: CircleAvatar(
                                                   radius: 150,
                                                   backgroundImage: FileImage(

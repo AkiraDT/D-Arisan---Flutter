@@ -1,5 +1,6 @@
 import 'package:darisan/group/group_screen.dart';
 import 'package:darisan/member/member_screen.dart';
+import 'package:darisan/shake_arisan/shake_arisan_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -23,7 +24,7 @@ class MainTabViewModel extends StateNotifier {
       case 1:
         return GroupScreen();
       case 2:
-        return MemberScreen();
+        return ShakeArisanScreen();
       case 3:
         return GroupScreen();
       case 4:
