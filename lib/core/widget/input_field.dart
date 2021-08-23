@@ -8,6 +8,7 @@ class InputField extends StatelessWidget {
   final bool isPassword;
   final Function onChanged;
   final String value;
+  final TextInputType textInputType;
 
   const InputField(
       {Key? key,
@@ -15,7 +16,7 @@ class InputField extends StatelessWidget {
       this.icon = Icons.perm_identity_outlined,
       this.color = Colors.black54,
       this.isPassword = false,
-      required this.onChanged, required this.value})
+      required this.onChanged, required this.value, this.textInputType=TextInputType.name})
       : super(key: key);
 
   @override
@@ -31,6 +32,7 @@ class InputField extends StatelessWidget {
 
     return Container(
       child: TextFormField(
+        keyboardType: textInputType,
         controller: _txtController,
         // initialValue: this.user,
         onChanged: (val) => onChanged(val),
